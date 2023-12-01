@@ -87,38 +87,38 @@ fun String.getReplacingOrder(): List<Pair<String, Int>> {
         .map { it.first }
 }
 
-fun wordExists(word: String, text: String): List<Pair<String, Int>> {
-    var finished = false
-    val indexes = mutableListOf<Int>()
-    while (!finished) {
-        val idx = text.indexOf(word)
-        if (idx < 0) {
-            finished = true
-        } else {
-            indexes.add(idx)
-        }
-    }
-    return indexes.map { Pair(word, it) }
-}
-
-fun process(text: String): List<Pair<Pair<String, Int>, Int>> {
+fun process(text: String): List<Pair<Pair<String, String>, Int>> {
     val digitsAsText = listOf(
-        Pair("one", 1),
-        Pair("two", 2),
-        Pair("three", 3),
-        Pair("four", 4),
-        Pair("five", 5),
-        Pair("six", 6),
-        Pair("seven", 7),
-        Pair("eight", 8),
-        Pair("nine", 9)
+        Pair("one", "1"),
+        Pair("two", "2"),
+        Pair("three", "3"),
+        Pair("four", "4"),
+        Pair("five", "5"),
+        Pair("six", "6"),
+        Pair("seven", "7"),
+        Pair("eight", "8"),
+        Pair("nine", "9")
     )
-    val x = digitsAsText.map {
-        Pair(it, text.indexOf(it.first))
-        Pair(it, text.length - text.reversed().indexOf(it.first.reversed()))
+    val x = digitsAsText.flatMap {
+        listOf(
+            Pair(it, text.indexOf(it.first)),
+            Pair(it, i(text, it))
+        )
+    }.filter {
+        it.second != -1
     }
         val t = x.distinct()
         val n = t.sortedBy { it.second }
         val m = n.let { listOf(it.first(), it.last()) }
     return m
 }
+
+private fun i(text: String, it: Pair<String, String>): Int {
+    val index = text.reversed().indexOf(it.first.reversed())
+    if(index < 0) {
+        return index
+    } else {
+        return text.length - index
+    }
+}
+
