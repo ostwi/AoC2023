@@ -36,7 +36,7 @@ class day1 {
         }
         .sum()
 
-    fun getResult2(): Int = data
+    fun getResult2(): Int = data2
         .map{ line ->
             var processedLine = line
             process(processedLine).let {
