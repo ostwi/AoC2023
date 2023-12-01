@@ -102,7 +102,7 @@ fun process(text: String): List<Pair<Pair<String, String>, Int>> {
     val x = digitsAsText.flatMap {
         listOf(
             Pair(it, text.indexOf(it.first)),
-            Pair(it, i(text, it))
+            Pair(it, i(text.reversed(), it))
         )
     }.filter {
         it.second != -1
