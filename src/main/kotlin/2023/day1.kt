@@ -40,8 +40,8 @@ class day1 {
         .map{ line ->
             var processedLine = line
             process(processedLine).let {
-                processedLine = processedLine.replace(it.first().first.first, it.first().first.second.toString())
-                processedLine = processedLine.reversed().replace(it.first().first.first.reversed(), it.first().first.second.toString()).reversed()
+                processedLine = processedLine.replace(it.first().first.first, it.first().first.second)
+                processedLine = processedLine.replace(it.last().first.first, it.last().first.second)
             }
             processedLine
         }
