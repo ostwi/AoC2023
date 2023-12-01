@@ -37,24 +37,63 @@ class day1 {
         }
         .sum()
 
+    fun getNumberForString(input: String): String {
+        val numberWords = mapOf(
+            "one" to "1",
+            "two" to "2",
+            "three" to "3",
+            "four" to "4",
+            "five" to "5",
+            "six" to "6",
+            "seven" to "7",
+            "eight" to "8",
+            "nine" to "9"
+        )
+
+        var output = input
+        var foundNumberWord: Boolean
+
+        do {
+            foundNumberWord = false
+            var firstNumberWord: String? = null
+            var firstIndex = output.length
+
+            for (word in numberWords.keys) {
+                val index = output.indexOf(word)
+                if (index in 0 until firstIndex) {
+                    firstIndex = index
+                    firstNumberWord = word
+                    foundNumberWord = true
+                }
+            }
+
+            if (firstNumberWord != null) {
+                output = output.replaceFirst(firstNumberWord, numberWords[firstNumberWord]!!)
+            }
+        } while (foundNumberWord)
+
+        return output
+    }
+
+    fun splitString(input: String): List<String> {
+        val regex = "(?<=\\d)(?=\\D)|(?<=\\D)(?=\\d)".toRegex()
+        return input.split(regex)
+    }
+
     fun getResult2(): Int = data2
         .map{
-            it.replace("one", "1")
-            .replace("two", "2")
-            .replace("three", "3")
-            .replace("four", "4")
-            .replace("five", "5")
-            .replace("six", "6")
-            .replace("seven", "7")
-            .replace("eight", "8")
-            .replace("nine", "9")
+            // divide string into list of strings divided by numbers
+            val splitString = splitString(it)
+            val numberForStringData = splitString.map {
+                getNumberForString(it)
+            }
+
+            numberForStringData.joinToString(separator = "")
         }
         .map{
-            println(it)
             it.filter { letter -> letter.isDigit() }
         }
         .map{
-            println(it)
             if (
                 it.length == 1
             ) {
@@ -64,7 +103,6 @@ class day1 {
             }
         }
         .map{
-            println(it)
             it.toInt()
         }
         .sum()
