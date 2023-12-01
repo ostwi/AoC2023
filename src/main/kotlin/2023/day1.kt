@@ -36,10 +36,13 @@ class day1 {
         }
         .sum()
 
-    fun getResult2(): Int = data2
+    fun getResult2(): Int = data
         .map{ line ->
             var processedLine = line
             process(processedLine).let {
+                if (it.isEmpty()) {
+                    return@map processedLine
+                }
                 processedLine = processedLine.replace(it.first().first.first, it.first().first.second)
                 processedLine = processedLine.replace(it.last().first.first, it.last().first.second)
             }
@@ -109,7 +112,12 @@ fun process(text: String): List<Pair<Pair<String, String>, Int>> {
     }
         val t = x.distinct()
         val n = t.sortedBy { it.second }
-        val m = n.let { listOf(it.first(), it.last()) }
+        val m = n.let {
+            if (it.isEmpty()) {
+                return listOf()
+            }
+            listOf(it.first(), it.last())
+        }
     return m
 }
 
