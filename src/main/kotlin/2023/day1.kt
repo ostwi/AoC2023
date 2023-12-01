@@ -38,6 +38,7 @@ class day1 {
 
     fun getResult2(): Int = data2
         .map{ line ->
+            println(line)
             var processedLine = line
             process(processedLine).let {
                 if (it.isEmpty()) {
@@ -45,15 +46,17 @@ class day1 {
                 }
                 processedLine = processedLine.replace(it.first().first.first, it.first().first.second)
                 processedLine = processedLine.replace(it.last().first.first, it.last().first.second)
+                if (it.first().first != it.last().first &&
+                    processedLine.filter { it.isDigit() }.length == 1 ) {
+                    processedLine = "${it.first().first.second}${it.last().first.second}"
+                }
             }
             processedLine
         }
         .map{
-            println(it)
             it.filter { letter -> letter.isDigit() }
         }
         .map{
-            println(it)
             if (
                 it.length == 1
             ) {
