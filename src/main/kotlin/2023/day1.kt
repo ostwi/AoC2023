@@ -11,19 +11,9 @@ class day1 {
     }
 
     fun challange2() {
-//        val result = getResult2()
-//        for (i in 0..data2.size-1) {
-//            println(data2[i])
-//            println(result[i])
-//            println("====================================")
-//        }
-        println(getResult2())
+        println(startBackResult())
     }
 
-    // filter only numbers
-    // filter to only have first and last number (1 => 11, 123 => 13)
-    // map to int
-    // sum of all calibratedValues
     fun getResult(): Int = data
         .map{
             it.filter { letter -> letter.isDigit() }
@@ -76,7 +66,85 @@ class day1 {
             it.toInt()
         }
         .sum()
+    // working solution
+    // hallelujah
+    fun startBackResult(): Any = data
+        .map{
+            var firstNumber = ""
+            var lastNumber = ""
+            val lineLength = it.length
+
+            // Forward loop to find the first number
+            for (i in 0..lineLength) {
+                val substring = it.substring(0, i)
+                val foundNumber = getFirstNumberAsString(substring)
+                if (foundNumber.isNotEmpty()) {
+                    println("found first number ${foundNumber}")
+                    firstNumber = foundNumber
+                    break
+                }
+            }
+
+            // Backward loop to find the last number
+            for (i in lineLength downTo 1) {
+                val substring = it.substring(i - 1, lineLength)
+                val foundNumber = getFirstNumberAsString(substring)
+                if (foundNumber.isNotEmpty()) {
+                    println("found last number ${foundNumber}")
+                    lastNumber = foundNumber
+                    break
+                }
+            }
+
+            println("first number is ${firstNumber}")
+            println("last number is ${lastNumber}")
+            val combinedString = "${firstNumber}${lastNumber}"
+
+            combinedString.toIntOrNull() ?: 0
+        }
+        .sum()
+
+    fun getFirstNumberAsString(input: String): String {
+        val numberWords = mapOf(
+            "one" to "1",
+            "two" to "2",
+            "three" to "3",
+            "four" to "4",
+            "five" to "5",
+            "six" to "6",
+            "seven" to "7",
+            "eight" to "8",
+            "nine" to "9"
+        )
+
+        // Check for single digit first
+        input.forEach { char ->
+            if (char.isDigit()) {
+                return char.toString()
+            }
+        }
+
+        // If no single digit is found, look for number words
+        for (word in numberWords.keys) {
+            if (input.contains(word)) {
+                return numberWords[word]!!
+            }
+        }
+
+        // Return empty string if no number found
+        return ""
+    }
+
+    fun main() {
+        val inputStrings = listOf("ioiasdf2", "oiutwo", "seveneightnine")
+
+        inputStrings.forEach {
+            println(getFirstNumberAsString(it))
+        }
+    }
+
 }
+
 
 fun String.getReplacingOrder(): List<Pair<String, Int>> {
     val digitsAsText = listOf(
