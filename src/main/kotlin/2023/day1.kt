@@ -37,63 +37,20 @@ class day1 {
         }
         .sum()
 
-    fun getNumberForString(input: String): String {
-        val numberWords = mapOf(
-            "one" to "1",
-            "two" to "2",
-            "three" to "3",
-            "four" to "4",
-            "five" to "5",
-            "six" to "6",
-            "seven" to "7",
-            "eight" to "8",
-            "nine" to "9"
-        )
-
-        var output = input
-        var foundNumberWord: Boolean
-
-        do {
-            foundNumberWord = false
-            var firstNumberWord: String? = null
-            var firstIndex = output.length
-
-            for (word in numberWords.keys) {
-                val index = output.indexOf(word)
-                if (index in 0 until firstIndex) {
-                    firstIndex = index
-                    firstNumberWord = word
-                    foundNumberWord = true
-                }
+    fun getResult2(): Int = data
+        .map{ line ->
+            var processedLine = line
+            line.getReplacingOrder().map {
+                processedLine = processedLine.replace(it.first, it.second.toString())
             }
-
-            if (firstNumberWord != null) {
-                output = output.replaceFirst(firstNumberWord, numberWords[firstNumberWord]!!)
-            }
-        } while (foundNumberWord)
-
-        return output
-    }
-
-    fun splitString(input: String): List<String> {
-        val regex = "(?<=\\d)(?=\\D)|(?<=\\D)(?=\\d)".toRegex()
-        return input.split(regex)
-    }
-
-    fun getResult2(): Int = data2
-        .map{
-            // divide string into list of strings divided by numbers
-            val splitString = splitString(it)
-            val numberForStringData = splitString.map {
-                getNumberForString(it)
-            }
-
-            numberForStringData.joinToString(separator = "")
+            processedLine
         }
         .map{
+            println(it)
             it.filter { letter -> letter.isDigit() }
         }
         .map{
+            println(it)
             if (
                 it.length == 1
             ) {
@@ -103,7 +60,28 @@ class day1 {
             }
         }
         .map{
+            println(it)
             it.toInt()
         }
         .sum()
+}
+
+fun String.getReplacingOrder(): List<Pair<String, Int>> {
+    val digitsAsText = listOf(
+        Pair("one", 1),
+        Pair("two", 2),
+        Pair("three", 3),
+        Pair("four", 4),
+        Pair("five", 5),
+        Pair("six", 6),
+        Pair("seven", 7),
+        Pair("eight", 8),
+        Pair("nine", 9)
+    )
+    return digitsAsText.map { pair ->
+        Pair(pair, this.indexOf(pair.first))
+    }
+        .filter { it.second != -1 }
+        .sortedBy { it.second }
+        .map { it.first }
 }
