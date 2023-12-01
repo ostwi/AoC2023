@@ -1,7 +1,6 @@
 package `2023`
 
 import java.io.File
-import kotlin.reflect.typeOf
 
 class day1 {
     val data: List<String> = File("src/main/resources/2023/1-1.txt").readLines()
@@ -37,11 +36,12 @@ class day1 {
         }
         .sum()
 
-    fun getResult2(): Int = data
+    fun getResult2(): Int = data2
         .map{ line ->
             var processedLine = line
-            line.getReplacingOrder().map {
-                processedLine = processedLine.replace(it.first, it.second.toString())
+            process(processedLine).let {
+                processedLine = processedLine.replace(it.first().first.first, it.first().first.second.toString())
+                processedLine = processedLine.reversed().replace(it.first().first.first.reversed(), it.first().first.second.toString()).reversed()
             }
             processedLine
         }
@@ -83,5 +83,42 @@ fun String.getReplacingOrder(): List<Pair<String, Int>> {
     }
         .filter { it.second != -1 }
         .sortedBy { it.second }
+        .let { listOf(it.first(), it.last()) }
         .map { it.first }
+}
+
+fun wordExists(word: String, text: String): List<Pair<String, Int>> {
+    var finished = false
+    val indexes = mutableListOf<Int>()
+    while (!finished) {
+        val idx = text.indexOf(word)
+        if (idx < 0) {
+            finished = true
+        } else {
+            indexes.add(idx)
+        }
+    }
+    return indexes.map { Pair(word, it) }
+}
+
+fun process(text: String): List<Pair<Pair<String, Int>, Int>> {
+    val digitsAsText = listOf(
+        Pair("one", 1),
+        Pair("two", 2),
+        Pair("three", 3),
+        Pair("four", 4),
+        Pair("five", 5),
+        Pair("six", 6),
+        Pair("seven", 7),
+        Pair("eight", 8),
+        Pair("nine", 9)
+    )
+    val x = digitsAsText.map {
+        Pair(it, text.indexOf(it.first))
+        Pair(it, text.length - text.reversed().indexOf(it.first.reversed()))
+    }
+        val t = x.distinct()
+        val n = t.sortedBy { it.second }
+        val m = n.let { listOf(it.first(), it.last()) }
+    return m
 }
