@@ -11,6 +11,12 @@ class day1 {
     }
 
     fun challange2() {
+//        val result = getResult2()
+//        for (i in 0..data2.size-1) {
+//            println(data2[i])
+//            println(result[i])
+//            println("====================================")
+//        }
         println(getResult2())
     }
 
@@ -36,15 +42,16 @@ class day1 {
         }
         .sum()
 
-    fun getResult2(): Int = data2
+    fun getResult2(): Int = data
         .map{ line ->
-            println(line)
             var processedLine = line
             process(processedLine).let {
                 if (it.isEmpty()) {
                     return@map processedLine
                 }
-                processedLine = processedLine.replace(it.first().first.first, it.first().first.second)
+                if (it.first().second < processedLine.indexOfFirst { it.isDigit() }) {
+                    processedLine = processedLine.replace(it.first().first.first, it.first().first.second)
+                }
                 processedLine = processedLine.replace(it.last().first.first, it.last().first.second)
                 if (it.first().first != it.last().first &&
                     processedLine.filter { it.isDigit() }.length == 1 ) {
@@ -66,7 +73,6 @@ class day1 {
             }
         }
         .map{
-            println(it)
             it.toInt()
         }
         .sum()
@@ -108,7 +114,7 @@ fun process(text: String): List<Pair<Pair<String, String>, Int>> {
     val x = digitsAsText.flatMap {
         listOf(
             Pair(it, text.indexOf(it.first)),
-            Pair(it, i(text.reversed(), it))
+            Pair(it, i(text, it))
         )
     }.filter {
         it.second != -1
