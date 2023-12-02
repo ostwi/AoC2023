@@ -1,5 +1,5 @@
-import `2023`.day2.Challenge1
+import `2023`.day2.Challenge2
 
 fun main(args: Array<String>) {
-    Challenge1().run()
+    Challenge2().run()
 }

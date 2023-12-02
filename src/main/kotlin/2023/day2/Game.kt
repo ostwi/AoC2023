@@ -32,6 +32,12 @@ enum class CubeColor {
     RED,
 }
 
+data class MinimumCubeGroup(
+    val red: Int,
+    val green: Int,
+    val blue: Int,
+)
+
 fun parseGame(game: String): Game {
     val roundId = game.substringAfter("Game ").substringBefore(":").toInt()
     val rounds = game.substringAfter("Game $roundId: ")
