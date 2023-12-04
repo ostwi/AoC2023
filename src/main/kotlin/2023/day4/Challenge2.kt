@@ -3,8 +3,8 @@ package `2023`.day4
 import java.io.File
 
 class Challenge2 {
-    private val data: List<String> = File("src/main/resources/2023/Day4/4-test.txt").readLines()
-//    private val data: List<String> = File("src/main/resources/2023/Day4/4.txt").readLines()
+//    private val data: List<String> = File("src/main/resources/2023/Day4/4-test.txt").readLines()
+    private val data: List<String> = File("src/main/resources/2023/Day4/4.txt").readLines()
 
     fun run() {
         println(getResult())
@@ -38,10 +38,8 @@ class Challenge2 {
             }
             counts.add(count)
         }
-        println(counts)
 
-        println( getScore(counts))
-        return counts.sum()
+        return getScore(counts)
     }
 
     private fun getScore(results: List<Int>): Int {
@@ -49,11 +47,10 @@ class Challenge2 {
         repeat(results.size) { copies.add(1) }
         for (i in results.indices) {
             for (k in 1..copies[i]) {
-                for (j in i + 1..results[i]) {
+                for (j in 1..results[i]) {
                     copies[i+j]++
                 }
             }
-            println(copies)
         }
         return copies.sum()
     }
