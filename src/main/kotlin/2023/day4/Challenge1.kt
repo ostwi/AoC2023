@@ -11,7 +11,38 @@ class Challenge1 {
     }
 
     private fun getResult(): Int {
-        return 0
+        val winningPoints = data.map { line ->
+            line.substringAfter(": ")
+                .substringBefore("|")
+                .trim()
+                .split(" ")
+                .filter { it != "" }
+                .map { it.toInt() }
+        }
+        val myPoints = data.map { line ->
+            line.substringAfter("| ")
+                .trim()
+                .split(" ")
+                .filter { it != "" }
+                .map { it.toInt() }
+        }
+
+        val results = mutableListOf<Int>()
+
+        for (i in winningPoints.indices) {
+            var count = 0
+            for (j in winningPoints[i].indices) {
+                if(myPoints[i].contains(winningPoints[i][j])) {
+                    if (count == 0) {
+                        count++
+                    } else {
+                        count *= 2
+                    }
+                }
+            }
+            results.add(count)
+        }
+        return results.sum()
     }
 }
 
