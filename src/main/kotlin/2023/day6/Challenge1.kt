@@ -11,7 +11,14 @@ class Challenge1 {
     }
 
     private fun getResult(): Long {
-        return 0
+        val times = parseStringToIntList(data[0])
+        val records = parseStringToIntList(data[1])
+        val races = getRaces(times.size, times, records)
+        println(races)
+        val possibilities = races.map {
+            getRecordSolutions(it)
+        }
+        return possibilities.reduce(Int::times).toLong()
     }
 }
 
