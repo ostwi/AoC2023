@@ -11,7 +11,51 @@ class Challenge2 {
     }
 
     private fun getResult(): Long {
-       return 0
+        val instructions = data[0].chars().toArray().map { it.toChar() }
+        val positions = data.subList(2, data.size).map { it.getNode() }
+        val positionsMap = positions.associateBy { it.position }
+        var lastPosition = "AAA"
+        var result = 0L
+        var finished = false
+        var counter = 0
+
+        while (!finished) {
+            result++
+            val position = positionsMap[lastPosition]!!
+            when (instructions[counter]) {
+                'L' -> {
+                    lastPosition = position.left
+                    if (position.left == "ZZZ") {
+                        finished = true
+                    }
+                }
+                'R' -> {
+                    lastPosition = position.right
+                    if (position.right == "ZZZ") {
+                        finished = true
+                    }
+                }
+            }
+            counter++
+            if (counter >= instructions.size) {
+                counter = 0
+            }
+        }
+        return result
     }
+
+    fun String.getNode(): Node {
+        return Node(
+            this.take(3),
+            this.substring(7, 10),
+            this.substring(12, 15)
+        )
+    }
+
+    data class Node(
+        val position: String,
+        val left: String,
+        val right: String
+    )
 }
 

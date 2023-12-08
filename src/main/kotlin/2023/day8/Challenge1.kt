@@ -57,19 +57,5 @@ class Challenge1 {
         val left: String,
         val right: String
     )
-    enum class Instruction(val value: Char) {
-        LEFT('L'),
-        RIGHT('R');
-
-        companion object {
-            fun fromChar(value: Char): Instruction {
-                return when (value) {
-                    'L' -> LEFT
-                    'R' -> RIGHT
-                    else -> throw IllegalArgumentException("Invalid instruction: $value")
-                }
-            }
-        }
-    }
 }
 
