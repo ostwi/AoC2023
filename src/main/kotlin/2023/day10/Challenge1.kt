@@ -4,8 +4,8 @@ import java.io.File
 import java.lang.RuntimeException
 
 class Challenge1 {
-    private val data: List<String> = File("src/main/resources/2023/Day10/test.txt").readLines()
-//    private val data: List<String> = File("src/main/resources/2023/Day10/data.txt").readLines()
+//    private val data: List<String> = File("src/main/resources/2023/Day10/test.txt").readLines()
+    private val data: List<String> = File("src/main/resources/2023/Day10/data.txt").readLines()
 
     fun run() {
         println(getResult())
@@ -13,62 +13,51 @@ class Challenge1 {
 
     private fun getResult(): Int {
         val starts = findStartNodes(data)
+        val results = mutableListOf<Int>()
         for (start in starts) {
             println(start)
-            println( findLoop(start.first, start.second[0], start.second[1]))
+            results.add(findLoop(start.first, start.second[0]) / 2)
         }
-        return 0
+        return results.max()
     }
-    fun findLoop(start: Connector, left: Pair<Int, Int>, right: Pair<Int, Int>): Int {
+
+    fun findLoop(start: Connector, next: Pair<Int, Int>): Int {
         var depth = 0
-        var nodesToCheck = mutableListOf(
-            Pair(left,getStartPosition()),
-            Pair(right,getStartPosition())
-        )
+        val startPosition = getStartPosition()
+        var nodeToCheck = Triple(Connector.getConnector(data[next.first][next.second]), next, startPosition)
         var visited = mutableListOf<Pair<Int, Int>>()
-        var state = State.LOOP
-        while (state == State.LOOP) {
+        while (true) {
             depth++
-            val newNodesToCheck = mutableListOf<Pair<Pair<Int, Int>, Pair<Int, Int>>>()
-            for (nodeSet in nodesToCheck) {
-                println(nodeSet)
-                val position = nodeSet.first
-                val previousPosition = nodeSet.second
-                if (!isPositionValid(position)){
-                    continue
-                }
-                if (visited.contains(position)) {
-                    return 0
-                }
-                visited.add(position)
-                var connector = goDown(
-                    position.first,
-                    position.second,
-                    Input(previousPosition.first, previousPosition.second))
-                if (connector?.first == Connector.START) {
-                    state = State.START
-                    break
-                }
-                if (connector != null) {
-                    newNodesToCheck.add(Pair(connector.second, position))
-                }
-            }
-            if (newNodesToCheck.isEmpty()) {
+            val position = nodeToCheck.second
+            val previousPosition = nodeToCheck.third
+            if (!isPositionValid(position)){
+                println("not a loop")
                 return 0
             }
-            nodesToCheck = newNodesToCheck
+            if (visited.contains(position)) {
+                println("not a loop")
+                return 0
+            }
+            visited.add(position)
+            var connector = goDown(
+                position.first,
+                position.second,
+                Input(previousPosition.first, previousPosition.second))
+            if (connector?.first == Connector.START) {
+                println("loop found")
+                return depth
+            }
+            if (connector == null) {
+                println("not a loop")
+                return 0
+            }
+            nodeToCheck = Triple(connector.first, connector.second, position)
         }
-        return depth
     }
 
     private fun isPositionValid(position: Pair<Int, Int>): Boolean {
         return position.first >= 0 && position.first < data.size &&
                 position.second >= 0 && position.second < data[position.first].length
-    }
-
-    enum class State {
-        START,
-        LOOP,
     }
 
     data class Input(
@@ -103,14 +92,10 @@ class Challenge1 {
             possibleConnectors.add(Connector.START)
         }
         return if (possibleConnectors.contains(Connector.getConnector(data[y][x]))) {
-            println(Connector.getConnector(data[y][x]))
-            println(getPossibleStartPositions(Connector.getConnector(data[y][x]), x, y))
-            println("input: $input")
             val nextPosition = getPossibleStartPositions(Connector.getConnector(data[y][x]), x, y)
                 .filter { it != Pair(input.x, input.y) }
                 .getOrNull(0) ?: return null
-            println(nextPosition)
-            Pair(Connector.getConnector(data[x][y]), nextPosition)
+            Pair(Connector.getConnector(data[y][x]), nextPosition)
         } else {
             null
         }
@@ -124,7 +109,7 @@ class Challenge1 {
     fun getStartPosition(): Pair<Int, Int> {
         for (i in data.indices) {
             if (data[i].indexOf("S") != -1) {
-                return Pair(i, data[i].indexOf("S"))
+                return Pair(data[i].indexOf("S"), i)
             }
         }
         throw RuntimeException("No start position found")
@@ -135,8 +120,8 @@ class Challenge1 {
         var y = 0
         for (i in data.indices) {
             if (data[i].indexOf("S") != -1) {
-                x = i
-                y = data[i].indexOf("S")
+                y = i
+                x = data[i].indexOf("S")
                 break
             }
         }
@@ -160,22 +145,22 @@ class Challenge1 {
                 return listOf(Pair(x - 1, y), Pair(x + 1, y))
             }
             Connector.LEFT_DOWN -> {
-                return listOf(Pair(x + 1, y), Pair(x, y + 1))
-            }
-            Connector.RIGHT_DOWN -> {
                 return listOf(Pair(x - 1, y), Pair(x, y + 1))
             }
-            Connector.LEFT_UP -> {
-                return listOf(Pair(x + 1, y), Pair(x, y - 1))
+            Connector.RIGHT_DOWN -> {
+                return listOf(Pair(x + 1, y), Pair(x, y + 1))
             }
-            Connector.RIGHT_UP -> {
+            Connector.LEFT_UP -> {
                 return listOf(Pair(x - 1, y), Pair(x, y - 1))
             }
+            Connector.RIGHT_UP -> {
+                return listOf(Pair(x + 1, y), Pair(x, y - 1))
+            }
             Connector.GROUND -> {
-                return listOf(Pair(x, y - 1))
+                return emptyList()
             }
             Connector.START -> {
-                return listOf(Pair(x, y + 1))
+                return listOf(Pair(x, y + 1), Pair(x, y - 1), Pair(x+1, y), Pair(x-1, y))
             }
         }
     }
