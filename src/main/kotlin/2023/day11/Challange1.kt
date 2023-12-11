@@ -13,12 +13,32 @@ class Challenge1 {
         val rotatedMatrix = rotateMatrixForth(emptyRowMatrixExpansion)
         val emptyColumnMatrixExpansion2 = expandMatrixOnEmptyRows(rotatedMatrix)
         val rotatedBackMatrix = rotateMatrixBack(emptyColumnMatrixExpansion2)
+        val transformedHashtagsToNumbers = transformHashtagsToNumbers(rotatedBackMatrix)
 
-        for (row in rotatedBackMatrix) {
+        for (row in transformedHashtagsToNumbers) {
             println(row)
-            println(row.size)
         }
     }
+}
+
+sealed class MatrixPoint {}
+class Space: MatrixPoint()
+data class Number(val value: Int): MatrixPoint()
+object Hashtag: MatrixPoint() {
+    var iterator = 0
+    fun toNextNumber() = Number(++iterator)
+}
+fun transformHashtagsToNumbers(matrix: MutableList<CharArray>): MutableList<CharArray> {
+    var iterator = 0
+
+    val hashtag: Char = '#'
+    fun Char.isHashtag() = this == hashtag
+
+    for (row in matrix) {
+        row.forEachIndexed { index, character -> row[index] = if(character.isHashtag()) (++iterator).toString().first() else character }
+    }
+
+    return matrix
 }
 
 fun rotateMatrixForth(matrix: MutableList<CharArray>): MutableList<CharArray> {
