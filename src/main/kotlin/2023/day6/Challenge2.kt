@@ -4,7 +4,7 @@ import java.io.File
 
 class Challenge2 {
 //    private val data: List<String> = File("src/main/resources/2023/Day6/test.txt").readLines()
-    private val data: List<String> = File("src/main/resources/2023/Day6/data.txt").readLines()
+    private val data: List<String> = File("src/main/resources/2023/Day6/adam-6.txt").readLines()
 
     fun run() {
         println(getResult())
