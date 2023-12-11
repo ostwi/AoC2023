@@ -7,36 +7,91 @@ class Challenge1 {
 //    private val data: List<String> = File("src/main/resources/2023/Day10/test.txt").readLines()
     private val data: List<String> = File("src/main/resources/2023/Day10/data.txt").readLines()
 
+    private val changingNodes = arrayOf('L', '7', 'F', 'J', '|', 'S')
     fun run() {
         println(getResult())
     }
 
     private fun getResult(): Int {
         val starts = findStartNodes(data)
-        val results = mutableListOf<Int>()
+        val results = mutableListOf<Pair<List<Pair<Int, Int>>, Int>>()
         for (start in starts) {
             println(start)
-            results.add(findLoop(start.first, start.second[0]) / 2)
+            results.add(findLoop(start.first, start.second[0]))
         }
-        return results.max()
+        println(results.map { it.first })
+        val mid = results.maxBy { it.second }!!
+        val inside = findInsideTiles(mid.first)
+        return inside
     }
 
-    fun findLoop(start: Connector, next: Pair<Int, Int>): Int {
+    private fun findInsideTiles(path: List<Pair<Int, Int>>): Int {
+        val board = mutableListOf<String>()
+        for (i in data.indices) {
+            var newLine = ""
+           for (j in data[i].indices) {
+               if (Pair(j, i) in path) {
+                   newLine += data[i][j]
+               } else {
+                   newLine += '.'
+               }
+           }
+            println(newLine)
+            board.add(newLine)
+        }
+        var inside = 0
+        board.map { println(it) }
+        for (i in board.indices) {
+            var insideLoop = false
+            var cnt = 0
+            var lastPipe = '.'
+            for (j in board[i].indices) {
+                if (changingNodes.contains(board[i][j])) {
+                    if ((lastPipe == 'L') && (board[i][j] == '7')){
+                        insideLoop = !insideLoop
+                        lastPipe = board[i][j]
+                    } else if (lastPipe == '7' && board[i][j] == 'L') {
+//                        insideLoop = !insideLoop
+                        lastPipe = board[i][j]
+                    } else if (lastPipe == 'F' && board[i][j] == 'J') {
+                        insideLoop = !insideLoop
+                        lastPipe = board[i][j]
+                    } else if (lastPipe == 'F' && board[i][j] == 'J') {
+//                        insideLoop = !insideLoop
+                        lastPipe = board[i][j]
+                    } else if (board[i][j] == '|') {
+                        insideLoop = !insideLoop
+                        lastPipe = board[i][j]
+                    }
+                    lastPipe = board[i][j]
+                } else if (insideLoop && board[i][j] == '.') {
+                    cnt++
+                }
+            }
+            inside += cnt
+        }
+        return inside
+    }
+
+    fun findLoop(start: Connector, next: Pair<Int, Int>): Pair<List<Pair<Int, Int>>, Int> {
         var depth = 0
         val startPosition = getStartPosition()
         var nodeToCheck = Triple(Connector.getConnector(data[next.first][next.second]), next, startPosition)
         var visited = mutableListOf<Pair<Int, Int>>()
+        var path = mutableListOf<Pair<Int, Int>>()
+        path.add(startPosition)
         while (true) {
             depth++
             val position = nodeToCheck.second
             val previousPosition = nodeToCheck.third
+            path.add(position)
             if (!isPositionValid(position)){
                 println("not a loop")
-                return 0
+                return Pair(path, 0)
             }
             if (visited.contains(position)) {
                 println("not a loop")
-                return 0
+                return Pair(path, 0)
             }
             visited.add(position)
             var connector = goDown(
@@ -45,19 +100,19 @@ class Challenge1 {
                 Input(previousPosition.first, previousPosition.second))
             if (connector?.first == Connector.START) {
                 println("loop found")
-                return depth
+                return Pair(path, depth)
             }
             if (connector == null) {
                 println("not a loop")
-                return 0
+                return Pair(path, 0)
             }
             nodeToCheck = Triple(connector.first, connector.second, position)
         }
     }
 
     private fun isPositionValid(position: Pair<Int, Int>): Boolean {
-        return position.first >= 0 && position.first < data.size &&
-                position.second >= 0 && position.second < data[position.first].length
+        return position.second >= 0 && position.second < data.size &&
+                position.first >= 0 && position.first < data[position.second].length
     }
 
     data class Input(
