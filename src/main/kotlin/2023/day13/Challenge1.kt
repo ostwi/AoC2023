@@ -16,11 +16,11 @@ class Challenge1 {
         var cursor = 0
         for (i in data.indices) {
             if (data[i]=="") {
-                patterns.add(data.subList(cursor, i-1))
+                patterns.add(data.subList(cursor, i))
                 cursor=i+1
             }
             if (data.size - 1 == i) {
-                patterns.add(data.subList(cursor, i))
+                patterns.add(data.subList(cursor, i+1))
                 cursor=i+1
             }
         }
@@ -57,8 +57,6 @@ class Challenge1 {
                 }
             }
         }
-        println(symmetry.filter { it.first=='V' }.size)
-        println(symmetry.filter { it.first=='H' }.size)
 
         var res = 0
         for (axis in symmetry){
