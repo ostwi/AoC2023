@@ -1,5 +1,5 @@
-import `2023`.day13.Challenge1
-import `2023`.day13.Challenge2
+import `2023`.day15.Challenge1
+import `2023`.day15.Challenge2
 
 fun main(args: Array<String>) {
     println("Challenge 1:")
